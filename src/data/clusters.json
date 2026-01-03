@@ -1,0 +1,34 @@
+{
+  "clusters": [
+    {
+      "id": "neural-networks",
+      "name": "Neural Network Architectures",
+      "color": "#2563eb",
+      "description": "Research on neural network designs and architectures"
+    },
+    {
+      "id": "nlp",
+      "name": "Natural Language Processing",
+      "color": "#0891b2",
+      "description": "Language understanding and generation research"
+    },
+    {
+      "id": "computer-vision",
+      "name": "Computer Vision",
+      "color": "#7c3aed",
+      "description": "Visual perception and image analysis"
+    },
+    {
+      "id": "reinforcement-learning",
+      "name": "Reinforcement Learning",
+      "color": "#10b981",
+      "description": "Learning through interaction and rewards"
+    },
+    {
+      "id": "generative-models",
+      "name": "Generative Models",
+      "color": "#f59e0b",
+      "description": "Models for generating new data"
+    }
+  ]
+}
