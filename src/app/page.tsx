@@ -1,3 +1,5 @@
+import ClusterVisualization from "@/components/ClusterVisualization";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -12,7 +14,7 @@ export default function Home() {
         </header>
 
         <main className="bg-white rounded-lg shadow-sm p-6">
-          <p className="text-slate-700">Dashboard loading...</p>
+          <ClusterVisualization />
         </main>
       </div>
     </div>
