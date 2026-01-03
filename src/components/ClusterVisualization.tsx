@@ -25,26 +25,41 @@ export default function ClusterVisualization() {
   const [selectedCluster, setSelectedCluster] = useState<string | null>(null);
   const [selectedPapers, setSelectedPapers] = useState<number[]>([]);
   const [showComparisonTable, setShowComparisonTable] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Load data
     Promise.all([
-      fetch("/data/clusters.json").then((r) => r.json()),
-      fetch("/data/papers.json").then((r) => r.json()),
-    ]).then(([clustersData, papersData]) => {
-      // Count papers per cluster
-      const counts = papersData.papers.reduce((acc: Record<string, number>, paper: Paper) => {
-        acc[paper.clusterId] = (acc[paper.clusterId] || 0) + 1;
-        return acc;
-      }, {});
+      fetch("/data/clusters.json").then((r) => {
+        if (!r.ok) throw new Error("Failed to fetch clusters");
+        return r.json();
+      }),
+      fetch("/data/papers.json").then((r) => {
+        if (!r.ok) throw new Error("Failed to fetch papers");
+        return r.json();
+      }),
+    ])
+      .then(([clustersData, papersData]) => {
+        // Count papers per cluster
+        const counts = papersData.papers.reduce((acc: Record<string, number>, paper: Paper) => {
+          acc[paper.clusterId] = (acc[paper.clusterId] || 0) + 1;
+          return acc;
+        }, {});
 
-      const clustersWithCounts = clustersData.clusters.map((cluster: Cluster) => ({
-        ...cluster,
-        count: counts[cluster.id] || 0,
-      }));
+        const clustersWithCounts = clustersData.clusters.map((cluster: Cluster) => ({
+          ...cluster,
+          count: counts[cluster.id] || 0,
+        }));
 
-      setClusters(clustersWithCounts);
-    });
+        setClusters(clustersWithCounts);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error loading data:", err);
+        setError(err.message);
+        setLoading(false);
+      });
   }, []);
 
   const handleSelectPapers = (paperIds: number[]) => {
@@ -58,6 +73,22 @@ export default function ClusterVisualization() {
   const handleCloseTable = () => {
     setShowComparisonTable(false);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-slate-600">Loading clusters...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <p className="text-red-800">Error loading data: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
