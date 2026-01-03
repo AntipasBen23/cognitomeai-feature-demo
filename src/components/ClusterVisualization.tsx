@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import PaperList from "./PaperList";
+import ComparisonTable from "./ComparisonTable";
 
 interface Cluster {
   id: string;
@@ -23,6 +24,7 @@ export default function ClusterVisualization() {
   const [clusters, setClusters] = useState<ClusterWithCount[]>([]);
   const [selectedCluster, setSelectedCluster] = useState<string | null>(null);
   const [selectedPapers, setSelectedPapers] = useState<number[]>([]);
+  const [showComparisonTable, setShowComparisonTable] = useState(false);
 
   useEffect(() => {
     // Load data
@@ -47,6 +49,14 @@ export default function ClusterVisualization() {
 
   const handleSelectPapers = (paperIds: number[]) => {
     setSelectedPapers(paperIds);
+  };
+
+  const handleGenerateTable = () => {
+    setShowComparisonTable(true);
+  };
+
+  const handleCloseTable = () => {
+    setShowComparisonTable(false);
   };
 
   return (
@@ -88,10 +98,17 @@ export default function ClusterVisualization() {
 
       {selectedPapers.length > 0 && (
         <div className="flex justify-center">
-          <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+          <button 
+            onClick={handleGenerateTable}
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+          >
             Generate Comparison Table ({selectedPapers.length} papers)
           </button>
         </div>
+      )}
+
+      {showComparisonTable && (
+        <ComparisonTable paperIds={selectedPapers} onClose={handleCloseTable} />
       )}
     </div>
   );
