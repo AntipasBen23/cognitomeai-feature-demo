@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import PaperList from "./PaperList";
 
 interface Cluster {
   id: string;
@@ -21,6 +22,7 @@ interface ClusterWithCount extends Cluster {
 export default function ClusterVisualization() {
   const [clusters, setClusters] = useState<ClusterWithCount[]>([]);
   const [selectedCluster, setSelectedCluster] = useState<string | null>(null);
+  const [selectedPapers, setSelectedPapers] = useState<number[]>([]);
 
   useEffect(() => {
     // Load data
@@ -42,6 +44,10 @@ export default function ClusterVisualization() {
       setClusters(clustersWithCounts);
     });
   }, []);
+
+  const handleSelectPapers = (paperIds: number[]) => {
+    setSelectedPapers(paperIds);
+  };
 
   return (
     <div className="space-y-6">
@@ -78,11 +84,13 @@ export default function ClusterVisualization() {
         ))}
       </div>
 
-      {selectedCluster && (
-        <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <p className="text-sm text-blue-900">
-            Selected: <strong>{clusters.find((c) => c.id === selectedCluster)?.name}</strong>
-          </p>
+      <PaperList clusterId={selectedCluster} onSelectPapers={handleSelectPapers} />
+
+      {selectedPapers.length > 0 && (
+        <div className="flex justify-center">
+          <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+            Generate Comparison Table ({selectedPapers.length} papers)
+          </button>
         </div>
       )}
     </div>
